@@ -147,9 +147,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rx\reactive_x.hpp" />
+    <ClInclude Include="rx\schedule_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp" />
+    <ClCompile Include="rx\schedule_manager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

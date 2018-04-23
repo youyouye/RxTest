@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <functional>
+#include "schedule_manager.h"
 
 template<typename T>
 class Observer 
@@ -29,7 +30,11 @@ public:
 			on_next_(var);
 		}
 	}
-protected:
+	void SetOnCompletion(const std::function<void()>& func) { on_complete_ = func; }
+	void SetOnError(const std::function<void()>& func) { on_error_ = func; }
+	void SetOnNext(const std::function<void(T)>& func) { on_next_ = func; }
+
+public:
 	std::function<void()> on_complete_;
 	std::function<void()> on_error_;
 	std::function<void(T)> on_next_;
@@ -49,9 +54,6 @@ class FlowSubscribe : public Observer<T>
 {
 public:
 	void OnStart() override {}
-	void SetOnCompletion(const std::function<void()>& func) { on_complete_ = func; }
-	void SetOnError(const std::function<void()>& func) { on_error_ = func; }
-	void SetOnNext(const std::function<void(T)>& func) { on_next_ = func; }
 };
 
 template<typename T>
@@ -102,6 +104,11 @@ public:
 		on_subscribe_ = onscriber;
 	}
 	virtual ~Flowable() {};
+	
+	void SetObSubcribe(std::shared_ptr<OnSubscribe<T>> onsubscribe)
+	{
+		this->on_subscribe_ = onsubscribe;
+	}
 
 	static std::shared_ptr<Flowable<T>> Instance(std::shared_ptr<OnSubscribe<T>> onsubscribe)
 	{
@@ -119,6 +126,52 @@ public:
 		std::shared_ptr<OnSubscribe<R>> on_subscribe = std::make_shared<MapOnSubscribe<T,R>>(shared_from_this(), transformer);
 		auto flowable = Flowable<R>::Instance(on_subscribe);
 		return flowable;
+	}
+
+	std::shared_ptr<Flowable<T>> SubscribeOn(const ThreadType& type)
+	{
+		auto on_subscribe = std::make_shared<OnSubscribe<T>>();
+		std::shared_ptr<Flowable<T>> self = shared_from_this();
+		auto prev_subscribe = self->on_subscribe_;
+		on_subscribe->SetSubscribeCallback([prev_subscribe,type](std::shared_ptr<Observer<T>> observer) {
+			observer->OnStart();
+			ScheduleManager::Instance()->PostThread(type, [prev_subscribe,observer]() {
+				prev_subscribe->function_(observer);
+			});
+		});
+		this->SetObSubcribe(on_subscribe);
+		return shared_from_this();
+	}
+
+	std::shared_ptr<Flowable<T>> ObserveOn(const ThreadType& type)
+	{
+		auto on_subscribe = std::make_shared<OnSubscribe<T>>();
+		auto prev_subscribe = this->on_subscribe_;
+		on_subscribe->SetSubscribeCallback([type,prev_subscribe](std::shared_ptr<Observer<T>> observer) {
+			observer->OnStart();
+			auto prev_on_completion = observer->on_complete_;
+			auto prev_on_error = observer->on_error_;
+			auto prev_on_next = observer->on_next_;
+			observer->SetOnCompletion([type, observer, prev_on_completion]() {
+				ScheduleManager::Instance()->PostThread(type, [prev_on_completion]() {
+					prev_on_completion();
+				});
+			});
+
+			observer->SetOnError([type, observer, prev_on_error]() {
+				ScheduleManager::Instance()->PostThread(type, [observer, prev_on_error]() {
+					prev_on_error();
+				});
+			});
+			observer->SetOnNext([type, observer, prev_on_next](T var) {
+				ScheduleManager::Instance()->PostThread(type, [observer, var, prev_on_next]() {
+					prev_on_next(var);
+				});
+			});
+			prev_subscribe->function_(observer);
+		});
+		this->SetObSubcribe(on_subscribe);
+		return shared_from_this();
 	}
 
 private:
