@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include <functional>
+#include <tuple>
+#include <utility>
 #include "schedule_manager.h"
 
 template<typename T>
@@ -60,6 +62,8 @@ template<typename T>
 class OnSubscribe
 {
 public:
+	OnSubscribe() {}
+	OnSubscribe(std::function<void(std::shared_ptr<Observer<T>>)> function) { function_ = function; }
 	virtual ~OnSubscribe() {};
 	void SetSubscribeCallback(const std::function<void(std::shared_ptr<Observer<T>>)>& func) { function_ = func; }
 public:
@@ -99,6 +103,19 @@ template<typename T>
 class Flowable : public std::enable_shared_from_this<Flowable<T>>
 {
 public:
+	template<std::size_t I = 0, typename FuncT, typename... Tp>
+	static inline typename std::enable_if<I == sizeof...(Tp), void>::type
+		for_each(std::tuple<Tp...> &, FuncT) // Unused arguments are given no names.
+	{ }
+
+	template<std::size_t I = 0, typename FuncT, typename... Tp>
+	static inline typename std::enable_if < I < sizeof...(Tp), void>::type
+		for_each(std::tuple<Tp...>& t, FuncT f)
+	{
+		f(std::get<I>(t));
+		for_each<I + 1, FuncT, Tp...>(t, f);
+	}
+
 	Flowable(std::shared_ptr<OnSubscribe<T>> onscriber) 
 	{
 		on_subscribe_ = onscriber;
@@ -174,6 +191,30 @@ public:
 		return shared_from_this();
 	}
 
+	static std::shared_ptr<Flowable<T>> Just(T item) 
+	{
+		auto on_subscrice = std::make_shared<OnSubscribe<T>>();
+		auto func = [item](std::shared_ptr<Observer<T>> subsriber) {
+			subsriber->OnNext(item);
+		};
+		on_subscrice->SetSubscribeCallback(func);
+		return Flowable<T>::Instance(on_subscrice);
+	}
+	template<typename ...Types>
+	static std::shared_ptr<Flowable<T>> Just(Types ...args) 
+	{
+		auto on_subscrice = std::make_shared<OnSubscribe<T>>();
+		auto func = [args...](std::shared_ptr<Observer<T>> subsriber) {
+			auto arg = std::forward_as_tuple(args...);
+			for_each(arg, [subsriber](auto x) {
+				subsriber->OnNext(x);
+			});
+		};
+		on_subscrice->SetSubscribeCallback(func);
+		return Flowable<T>::Instance(on_subscrice);
+	}
+
+
 private:
 	std::shared_ptr<OnSubscribe<T>> on_subscribe_;
 };
@@ -195,3 +236,60 @@ public:
 	std::shared_ptr<Flowable<T>> flowable_;
 	std::shared_ptr<Transformer<T, R>> transformer_;
 };
+
+
+template<typename T>
+class Subject : public Observer<T>, public Flowable<T> 
+{
+public:
+	virtual ~Subject() {}
+	bool HasObservers() { return false; }
+	bool HasComplete() { return false; }
+};
+//不懂什么用,暂时不写了;
+/*
+template<typename T>
+class AsyncSubject : public Subject<T> 
+{
+public:
+	AsyncSubject() {}
+	~AsyncSubject() {}
+	static std::shared_ptr<AsyncSubject<T>> Instance()
+	{
+		return std::make_shared<AsyncSubject<T>>();
+	}
+
+	void Init() 
+	{
+		this->SetOnNext([](T var) {
+			value_ = var;
+		});
+		this->SetOnCompletion([]() {
+			
+		});
+		this->SetOnError(()[] {
+			
+		});
+	}
+
+
+private:
+	std::shared_ptr<Observer> subscribers_;
+	T value_;
+};
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

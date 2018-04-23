@@ -94,6 +94,60 @@ void test3()
 	ScheduleManager::Instance()->Stop();
 }
 
+/*
+//test_AsyncSubject
+void test4() 
+{
+	auto subject = AsyncSubject<std::string>::Instance();
+	//
+	auto flow_subsciber = std::make_shared<FlowSubscribe<std::string>>();
+	flow_subsciber->SetOnCompletion([]() {
+		std::cout << "completion!" << std::endl;
+	});
+	flow_subsciber->SetOnNext([](std::string param) {
+		std::cout << "next!" << std::this_thread::get_id() << std::endl;
+		std::cout << "next!" << param << std::endl;
+	});
+	flow_subsciber->SetOnError([]() {
+		std::cout << "error!" << std::endl;
+	});
+	subject->Subscribe(flow_subsciber);
+}
+*/
+//test just
+void test5() 
+{
+	auto flow_subsciber = std::make_shared<FlowSubscribe<std::string>>();
+	flow_subsciber->SetOnCompletion([]() {
+		std::cout << "completion!" << std::endl;
+	});
+	flow_subsciber->SetOnNext([](std::string param) {
+		std::cout << "next!" << std::this_thread::get_id() << std::endl;
+		std::cout << "next!" << param << std::endl;
+	});
+	flow_subsciber->SetOnError([]() {
+		std::cout << "error!" << std::endl;
+	});
+	Flowable<std::string>::Just("hello world")->Subscribe(flow_subsciber);
+}
+//test just(...args)
+void test6() 
+{
+	auto flow_subsciber = std::make_shared<FlowSubscribe<std::string>>();
+	flow_subsciber->SetOnCompletion([]() {
+		std::cout << "completion!" << std::endl;
+	});
+	flow_subsciber->SetOnNext([](std::string param) {
+		std::cout << "next!" << std::this_thread::get_id() << std::endl;
+		std::cout << "next!" << param << std::endl;
+	});
+	flow_subsciber->SetOnError([]() {
+		std::cout << "error!" << std::endl;
+	});
+	Flowable<std::string>::Just("hello world","222","333","444","555")->Subscribe(flow_subsciber);
+}
+
 void main() 
 {
+	test6();
 }
