@@ -225,28 +225,48 @@ void test10()
 		->Subscribe(flow_subsciber);
 }
 
+//test concat
+void test11() 
+{
+	auto memory = Flowable<std::string>::Instance([](std::shared_ptr<Observer<std::string>> subsriber) {
+		if (true)
+		{
+			subsriber->OnNext("123");
+		}
+		else 
+		{
+			subsriber->OnCompleted();
+		}
+	});
+
+	auto disk = Flowable<std::string>::Instance([](std::shared_ptr<Observer<std::string>> subsriber) {
+		if (false)
+		{
+			subsriber->OnNext("456");
+		}
+		else 
+		{
+			subsriber->OnCompleted();
+		}
+	});
+
+	auto network = Flowable<std::string>::Just("789");
+	Flowable<std::string>::Concat(std::vector<std::shared_ptr<Flowable<std::string>>>({ memory, disk, network }))
+		->Subscribe(std::make_shared<Observer<std::string>>(
+			[](std::string var) { std::cout << var << std::endl; },
+			[]() {},
+			[]() {}
+		));
+}
+
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test10();
+	test11();
 	while (true)
 	{
 	}
 	ScheduleManager::Instance()->Stop();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

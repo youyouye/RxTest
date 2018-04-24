@@ -11,29 +11,38 @@
 #include "operation/flowable_startwith.hpp"
 #include "operation/flowable_observeon.hpp"
 #include "operation/flowable_subscribeon.hpp"
+#include "operation/flowable_concat.h"
 
 template<typename T>
 class Observer : public std::enable_shared_from_this<Observer<T>>
 {
 public:
+	Observer() {}
+	Observer(const std::function<void(T var)> &on_next,const std::function<void()> &on_complete,
+		const std::function<void()> &on_error)
+	{
+		SetOnCompletion(on_complete);
+		SetOnError(on_error);
+		SetOnNext(on_next);
+	}
 	virtual ~Observer() {}
 	virtual std::shared_ptr<Observer<T>> GetActual() { return shared_from_this(); }
 	virtual void OnStart() {}
-	virtual void OnCompleted() 
+	void OnCompleted() 
 	{
 		if (on_complete_ != nullptr)
 		{
 			on_complete_();
 		}
 	}
-	virtual void OnError() 
+	 void OnError() 
 	{
 		if (on_error_ != nullptr) 
 		{
 			on_error_();
 		}
 	}
-	virtual void OnNext(T var) 
+	void OnNext(T var) 
 	{
 		if (on_next_ != nullptr)
 		{
@@ -130,6 +139,12 @@ public:
 	{
 		on_subscribe_ = onscriber;
 	}
+
+	Flowable(std::function<void(std::shared_ptr<Observer<T>>)> func)
+	{
+		on_subscribe_ = std::make_shared<OnSubscribe<T>>(func);
+	}
+
 	virtual ~Flowable() {};
 	
 	virtual std::shared_ptr<Flowable<T>> GetActual() { return shared_from_this(); }
@@ -142,6 +157,11 @@ public:
 	static std::shared_ptr<Flowable<T>> Instance(std::shared_ptr<OnSubscribe<T>> onsubscribe)
 	{
 		return std::make_shared<FlowableCreate<T>>(onsubscribe);
+	}
+
+	static std::shared_ptr<Flowable<T>> Instance(std::function<void(std::shared_ptr<Observer<T>>)> func)
+	{
+		return std::make_shared<Flowable<T>>(func);
 	}
 
 	void Subscribe(std::shared_ptr<Observer<T>> subscriber) 
@@ -222,6 +242,11 @@ public:
 		auto self = shared_from_this();
 		auto startwith = Just(value);
 		return std::make_shared<FlowableStartwith<T>>(self,startwith);
+	}
+	
+	static std::shared_ptr<Flowable<T>> Concat(const std::vector<std::shared_ptr<Flowable<T>>> &params)
+	{
+		return std::make_shared<FlowableConcat<T>>(params);
 	}
 
 public:
