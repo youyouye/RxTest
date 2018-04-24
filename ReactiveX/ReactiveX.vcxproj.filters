@@ -21,6 +21,24 @@
     <ClInclude Include="rx\schedule_manager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\operation\flowable_create.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\operation\flowable_unsubscribe.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\operation\flowable_startwith.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\operation\flowable_subscribeon.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\operation\flowable_observeon.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\common.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">

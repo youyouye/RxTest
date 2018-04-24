@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <thread>
 
 //test subscribe
 void test_subscribe() 
@@ -147,7 +148,105 @@ void test6()
 	Flowable<std::string>::Just("hello world","222","333","444","555")->Subscribe(flow_subsciber);
 }
 
+//test from array
+void test7() 
+{
+	auto flow_subsciber = std::make_shared<FlowSubscribe<std::string>>();
+	flow_subsciber->SetOnCompletion([]() {
+		std::cout << "completion!" << std::endl;
+	});
+	flow_subsciber->SetOnNext([](std::string param) {
+		std::cout << "next!" << std::this_thread::get_id() << std::endl;
+		std::cout << "next!" << param << std::endl;
+	});
+	flow_subsciber->SetOnError([]() {
+		std::cout << "error!" << std::endl;
+	});
+	Flowable<std::string>::From(std::vector<std::string>({ "hello world", "222", "333", "444", "555" }))->Subscribe(flow_subsciber);
+}
+//test interval
+void test8() 
+{
+
+}
+//test unsubscrible
+void test9() 
+{
+	auto flow_subsciber = std::make_shared<FlowSubscribe<std::string>>();
+	flow_subsciber->SetOnCompletion([]() {
+		std::cout << "completion!" << std::endl;
+	});
+	flow_subsciber->SetOnNext([](std::string param) {
+		std::cout << "next!" << std::this_thread::get_id() << std::endl;
+		std::cout << "next!" << param << std::endl;
+	});
+	flow_subsciber->SetOnError([]() {
+		std::cout << "error!" << std::endl;
+	});
+	auto on_subscribe = std::make_shared<OnSubscribe<std::string>>();
+	auto func = [](std::shared_ptr<Observer<std::string>> subsriber) {
+		std::cout << "Onsubsribe :" << std::this_thread::get_id() << std::endl;
+		subsriber->OnNext("hello world!");
+		subsriber->Cancel();
+	};
+	on_subscribe->SetSubscribeCallback(func);
+
+	Flowable<std::string>::Instance(on_subscribe)
+		->SubscribeOn(ThreadType::k_IoThread)
+		->ObserveOn(ThreadType::k_Pool)
+		->UnsubscribeOn(ThreadType::k_IoThread)
+		->Subscribe(flow_subsciber);
+}
+
+//test startwith
+void test10() 
+{
+	auto flow_subsciber = std::make_shared<FlowSubscribe<std::string>>();
+	flow_subsciber->SetOnCompletion([]() {
+		std::cout << "completion!" << std::endl;
+	});
+	flow_subsciber->SetOnNext([](std::string param) {
+		std::cout << "next!" << std::this_thread::get_id() << std::endl;
+		std::cout << "next!" << param << std::endl;
+	});
+	flow_subsciber->SetOnError([]() {
+		std::cout << "error!" << std::endl;
+	});
+	auto on_subscribe = std::make_shared<OnSubscribe<std::string>>();
+	auto func = [](std::shared_ptr<Observer<std::string>> subsriber) {
+		std::cout << "subsribe complete"<< std::this_thread::get_id() << std::endl;
+		subsriber->OnNext("hello world!");
+	};
+	on_subscribe->SetSubscribeCallback(func);
+	Flowable<std::string>::Instance(on_subscribe)
+		->StartWith("1")
+		->SubscribeOn(ThreadType::k_Pool)
+		->ObserveOn(ThreadType::k_IoThread)
+		->Subscribe(flow_subsciber);
+}
+
 void main() 
 {
-	test6();
+	//current thread
+	std::cout << std::this_thread::get_id() << std::endl;
+	ScheduleManager::Instance()->Start(5);
+	test10();
+	while (true)
+	{
+	}
+	ScheduleManager::Instance()->Stop();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

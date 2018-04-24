@@ -3,13 +3,21 @@
 #include <functional>
 #include <tuple>
 #include <utility>
+#include <vector>
+#include "common.hpp"
 #include "schedule_manager.h"
+#include "operation/flowable_create.hpp"
+#include "operation/flowable_unsubscribe.hpp"
+#include "operation/flowable_startwith.hpp"
+#include "operation/flowable_observeon.hpp"
+#include "operation/flowable_subscribeon.hpp"
 
 template<typename T>
-class Observer 
+class Observer : public std::enable_shared_from_this<Observer<T>>
 {
 public:
 	virtual ~Observer() {}
+	virtual std::shared_ptr<Observer<T>> GetActual() { return shared_from_this(); }
 	virtual void OnStart() {}
 	virtual void OnCompleted() 
 	{
@@ -35,7 +43,7 @@ public:
 	void SetOnCompletion(const std::function<void()>& func) { on_complete_ = func; }
 	void SetOnError(const std::function<void()>& func) { on_error_ = func; }
 	void SetOnNext(const std::function<void(T)>& func) { on_next_ = func; }
-
+	virtual void Cancel() {}
 public:
 	std::function<void()> on_complete_;
 	std::function<void()> on_error_;
@@ -115,6 +123,8 @@ public:
 		f(std::get<I>(t));
 		for_each<I + 1, FuncT, Tp...>(t, f);
 	}
+	
+	Flowable() {}
 
 	Flowable(std::shared_ptr<OnSubscribe<T>> onscriber) 
 	{
@@ -122,6 +132,8 @@ public:
 	}
 	virtual ~Flowable() {};
 	
+	virtual std::shared_ptr<Flowable<T>> GetActual() { return shared_from_this(); }
+
 	void SetObSubcribe(std::shared_ptr<OnSubscribe<T>> onsubscribe)
 	{
 		this->on_subscribe_ = onsubscribe;
@@ -129,14 +141,15 @@ public:
 
 	static std::shared_ptr<Flowable<T>> Instance(std::shared_ptr<OnSubscribe<T>> onsubscribe)
 	{
-		return std::make_shared<Flowable<T>>(onsubscribe);
+		return std::make_shared<FlowableCreate<T>>(onsubscribe);
 	}
 
 	void Subscribe(std::shared_ptr<Observer<T>> subscriber) 
 	{
-		(*subscriber).OnStart();
-		(*on_subscribe_).function_(subscriber);
+		SubscribeActual(subscriber);
 	}
+	virtual void SubscribeActual(std::shared_ptr<Observer<T>> subscriber) {}
+
 	template<typename R>
 	std::shared_ptr<Flowable<R>> map(std::shared_ptr<Transformer<T,R>> transformer)
 	{
@@ -147,48 +160,14 @@ public:
 
 	std::shared_ptr<Flowable<T>> SubscribeOn(const ThreadType& type)
 	{
-		auto on_subscribe = std::make_shared<OnSubscribe<T>>();
-		std::shared_ptr<Flowable<T>> self = shared_from_this();
-		auto prev_subscribe = self->on_subscribe_;
-		on_subscribe->SetSubscribeCallback([prev_subscribe,type](std::shared_ptr<Observer<T>> observer) {
-			observer->OnStart();
-			ScheduleManager::Instance()->PostThread(type, [prev_subscribe,observer]() {
-				prev_subscribe->function_(observer);
-			});
-		});
-		this->SetObSubcribe(on_subscribe);
-		return shared_from_this();
+		auto self = shared_from_this();
+		return std::make_shared<FlowableSubscribeOn<T>>(self,type);
 	}
 
 	std::shared_ptr<Flowable<T>> ObserveOn(const ThreadType& type)
 	{
-		auto on_subscribe = std::make_shared<OnSubscribe<T>>();
-		auto prev_subscribe = this->on_subscribe_;
-		on_subscribe->SetSubscribeCallback([type,prev_subscribe](std::shared_ptr<Observer<T>> observer) {
-			observer->OnStart();
-			auto prev_on_completion = observer->on_complete_;
-			auto prev_on_error = observer->on_error_;
-			auto prev_on_next = observer->on_next_;
-			observer->SetOnCompletion([type, observer, prev_on_completion]() {
-				ScheduleManager::Instance()->PostThread(type, [prev_on_completion]() {
-					prev_on_completion();
-				});
-			});
-
-			observer->SetOnError([type, observer, prev_on_error]() {
-				ScheduleManager::Instance()->PostThread(type, [observer, prev_on_error]() {
-					prev_on_error();
-				});
-			});
-			observer->SetOnNext([type, observer, prev_on_next](T var) {
-				ScheduleManager::Instance()->PostThread(type, [observer, var, prev_on_next]() {
-					prev_on_next(var);
-				});
-			});
-			prev_subscribe->function_(observer);
-		});
-		this->SetObSubcribe(on_subscribe);
-		return shared_from_this();
+		auto self = shared_from_this();
+		return std::make_shared<FlowableObserveOn<T>>(self, type);
 	}
 
 	static std::shared_ptr<Flowable<T>> Just(T item) 
@@ -214,9 +193,66 @@ public:
 		return Flowable<T>::Instance(on_subscrice);
 	}
 
+	static std::shared_ptr<Flowable<T>> From(std::vector<T> arr) 
+	{
+		auto on_subscrice = std::make_shared<OnSubscribe<T>>();
+		auto func = [arr](std::shared_ptr<Observer<T>> subsriber) {
+			for (auto it = arr.begin();it!= arr.end();++it)
+			{
+				subsriber->OnNext(*it);
+			}
+		};
+		on_subscrice->SetSubscribeCallback(func);
+		return Flowable<T>::Instance(on_subscrice);
+	}
+	
+	static std::shared_ptr<Flowable<T>> Interval(int init_delay,int period,const ThreadType& type) 
+	{
+
+	}
+	
+	std::shared_ptr<Flowable<T>> UnsubscribeOn(const ThreadType& type) 
+	{
+		auto self = shared_from_this();
+		return std::make_shared<FlowableUnsubscribeOn<T>>(self,type);
+	}
+	
+	std::shared_ptr<Flowable<T>> StartWith(T value) 
+	{
+		auto self = shared_from_this();
+		auto startwith = Just(value);
+		return std::make_shared<FlowableStartwith<T>>(self,startwith);
+	}
+
+public:
+	std::shared_ptr<OnSubscribe<T>> on_subscribe_;
+};
+
+class FlowableInterval :public Flowable<int> 
+{
+public:
+	FlowableInterval(int init_delay,int period,ThreadType type) 
+	{
+		init_delay_ = init_delay;
+		period_ = period;
+		type_ = type;
+		Init();
+	}
+
+	void Init() 
+	{
+		auto on_subscrice = std::make_shared<OnSubscribe<int>>();
+		auto func = [](std::shared_ptr<Observer<int>> subsriber) {
+			
+		};
+		on_subscrice->SetSubscribeCallback(func);
+		this->SetObSubcribe(on_subscrice);
+	}
 
 private:
-	std::shared_ptr<OnSubscribe<T>> on_subscribe_;
+	int init_delay_ = 0;
+	int period_ = 0;
+	ThreadType type_;
 };
 
 template <typename T, typename R>
@@ -237,7 +273,6 @@ public:
 	std::shared_ptr<Transformer<T, R>> transformer_;
 };
 
-
 template<typename T>
 class Subject : public Observer<T>, public Flowable<T> 
 {
@@ -246,7 +281,7 @@ public:
 	bool HasObservers() { return false; }
 	bool HasComplete() { return false; }
 };
-//不懂什么用,暂时不写了;
+//不懂怎么用,暂时不写了;
 /*
 template<typename T>
 class AsyncSubject : public Subject<T> 
