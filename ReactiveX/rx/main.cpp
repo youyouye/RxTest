@@ -259,12 +259,51 @@ void test11()
 		));
 }
 
+//test flatmap
+void test12() 
+{
+	class Student 
+	{
+	public:
+		Student(std::string n) { name = n; }
+		std::string name;
+	};
+	class Course
+	{
+	public:
+		Course(std::string n) { name = n; }
+		std::string name;
+	};
+	std::vector<Student> students;
+	auto transfrom = std::make_shared<FlowableTransformer<Student, Course>>();
+	transfrom->SetCallback([](Student var)->std::shared_ptr<Flowable<Course>> {
+		return Flowable<Course>::Just(Course(var.name));
+	});
+	//subscriber
+	auto subscriber = std::make_shared<FlowSubscribe<Course>>();
+	subscriber->SetOnNext([](Course var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Course:" + var.name<< std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	students.push_back(Student("xxx"));
+	students.push_back(Student("yyy"));
+	students.push_back(Student("zzz"));
+	Flowable<Student>::From(students)
+		->FlatMap(transfrom)
+		->ObserveOn(ThreadType::k_Pool)
+		->Subscribe(subscriber);
+}
+
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test11();
+	test12();
 	while (true)
 	{
 	}

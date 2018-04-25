@@ -11,7 +11,8 @@
 #include "operation/flowable_startwith.hpp"
 #include "operation/flowable_observeon.hpp"
 #include "operation/flowable_subscribeon.hpp"
-#include "operation/flowable_concat.h"
+#include "operation/flowable_concat.hpp"
+#include "operation/flowable_flatmap.hpp"
 
 template<typename T>
 class Observer : public std::enable_shared_from_this<Observer<T>>
@@ -66,6 +67,21 @@ public:
 	void setTransformCallback(const std::function<R(T)>& func) { function_ = func; }
 public:
 	std::function<R(T)> function_;
+};
+
+template<typename T>
+class Flowable;
+
+template<typename T,typename R>
+class FlowableTransformer
+{
+public:
+	void SetCallback(std::function<std::shared_ptr<Flowable<R>>(T)> func) 
+	{
+		func_ = func;
+	}
+public:
+	std::function<std::shared_ptr<Flowable<R>>(T)> func_;
 };
 
 template<typename T>
@@ -248,6 +264,14 @@ public:
 	{
 		return std::make_shared<FlowableConcat<T>>(params);
 	}
+	
+	template<typename R>
+	std::shared_ptr<Flowable<R>> FlatMap(std::shared_ptr<FlowableTransformer<T, R>> transformer)
+	{
+		auto self = shared_from_this();
+		std::shared_ptr<Flowable<R>> ret = std::make_shared<FlowableFlatMap<T,R>>(self,transformer);
+		return ret;
+	}
 
 public:
 	std::shared_ptr<OnSubscribe<T>> on_subscribe_;
@@ -338,18 +362,3 @@ private:
 	T value_;
 };
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

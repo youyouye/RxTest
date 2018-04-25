@@ -147,8 +147,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rx\common.hpp" />
-    <ClInclude Include="rx\operation\flowable_concat.h" />
+    <ClInclude Include="rx\operation\flowable_concat.hpp" />
     <ClInclude Include="rx\operation\flowable_create.hpp" />
+    <ClInclude Include="rx\operation\flowable_flatmap.hpp" />
     <ClInclude Include="rx\operation\flowable_observeon.hpp" />
     <ClInclude Include="rx\operation\flowable_startwith.hpp" />
     <ClInclude Include="rx\operation\flowable_subscribeon.hpp" />
