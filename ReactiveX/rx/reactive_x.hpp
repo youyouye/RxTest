@@ -13,6 +13,7 @@
 #include "operation/flowable_subscribeon.hpp"
 #include "operation/flowable_concat.hpp"
 #include "operation/flowable_flatmap.hpp"
+#include "operation/flowable_merge.hpp"
 
 template<typename T>
 class Observer : public std::enable_shared_from_this<Observer<T>>
@@ -136,19 +137,6 @@ template<typename T>
 class Flowable : public std::enable_shared_from_this<Flowable<T>>
 {
 public:
-	template<std::size_t I = 0, typename FuncT, typename... Tp>
-	static inline typename std::enable_if<I == sizeof...(Tp), void>::type
-		for_each(std::tuple<Tp...> &, FuncT) // Unused arguments are given no names.
-	{ }
-
-	template<std::size_t I = 0, typename FuncT, typename... Tp>
-	static inline typename std::enable_if < I < sizeof...(Tp), void>::type
-		for_each(std::tuple<Tp...>& t, FuncT f)
-	{
-		f(std::get<I>(t));
-		for_each<I + 1, FuncT, Tp...>(t, f);
-	}
-	
 	Flowable() {}
 
 	Flowable(std::shared_ptr<OnSubscribe<T>> onscriber) 
@@ -272,6 +260,13 @@ public:
 		std::shared_ptr<Flowable<R>> ret = std::make_shared<FlowableFlatMap<T,R>>(self,transformer);
 		return ret;
 	}
+	
+	template<typename... Args>
+	static std::shared_ptr<Flowable<T>> Merge(Args... params) 
+	{
+		return std::make_shared<FlowableMerge<T,Args...>>(std::make_tuple(params...));
+	}
+
 
 public:
 	std::shared_ptr<OnSubscribe<T>> on_subscribe_;

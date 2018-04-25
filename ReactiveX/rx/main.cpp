@@ -298,12 +298,38 @@ void test12()
 		->Subscribe(subscriber);
 }
 
+//test13 merge
+void test13()
+{
+	auto flowable_one = Flowable<std::string>::Just("1.")
+		->SubscribeOn(ThreadType::k_Pool)
+		->ObserveOn(ThreadType::k_Pool);
+	auto flowable_two = Flowable<std::string>::Just("2.")
+		->SubscribeOn(ThreadType::k_Pool)
+		->ObserveOn(ThreadType::k_Pool);
+	auto flowable_three = Flowable<std::string>::Just("3.")
+		->SubscribeOn(ThreadType::k_Pool)
+		->ObserveOn(ThreadType::k_Pool);
+
+	auto subscriber = std::make_shared<FlowSubscribe<std::string>>();
+	subscriber->SetOnNext([](std::string var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Value:" + var << std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	Flowable<std::string>::Merge(flowable_one, flowable_two, flowable_three)
+		->Subscribe(subscriber);
+}
+
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test12();
+	test13();
 	while (true)
 	{
 	}
