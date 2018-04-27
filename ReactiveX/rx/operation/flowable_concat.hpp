@@ -19,7 +19,7 @@ public:
 		auto concat_subscriber = std::make_shared<ConcatSubscriber<T>>(params_, subscriber);
 		if (params_.size() > 0)
 		{
-			params_[0]->on_subscribe_->function_(concat_subscriber);
+			params_[0]->Subscribe(concat_subscriber);
 		}
 	}
 
@@ -44,7 +44,7 @@ public:
 			if (index_ < count_)
 			{
 				index_++;
-				params_[index_]->on_subscribe_->function_(shared_from_this());
+				params_[index_-1]->Subscribe(shared_from_this());
 			}
 		});
 	

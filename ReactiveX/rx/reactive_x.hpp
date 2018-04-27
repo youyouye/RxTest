@@ -189,7 +189,10 @@ public:
 	{
 		SubscribeActual(subscriber);
 	}
-	virtual void SubscribeActual(std::shared_ptr<Observer<T>> subscriber) {}
+	virtual void SubscribeActual(std::shared_ptr<Observer<T>> subscriber) 
+	{
+		(*on_subscribe_).function_(subscriber);
+	}
 
 	template<typename R>
 	std::shared_ptr<Flowable<R>> map(std::shared_ptr<Transformer<T,R>> transformer)
@@ -289,6 +292,11 @@ public:
 		std::shared_ptr<Flowable<T2>> observer_two,std::function<T(T1,T2)> func)
 	{
 		return std::make_shared<FlowableZip2<T, T1, T2>>(observer_one, observer_two,func);
+	}
+
+	std::shared_ptr<Flowable<T>> TakeUntil(std::shared_ptr<Flowable<T>> until) 
+	{
+		
 	}
 
 public:

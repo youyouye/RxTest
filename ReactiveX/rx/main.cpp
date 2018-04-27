@@ -346,12 +346,73 @@ void test14()
 		->Subscribe(subscriber);
 }
 
+//test zip2
+void test15()
+{
+	auto first = std::make_shared<Flowable<std::string>>([](std::shared_ptr<Observer<std::string>> observer) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+		observer->OnNext("hello world");
+	})
+		->SubscribeOn(ThreadType::k_Pool);
+	class Student 
+	{
+	public:
+		Student() {}
+		Student(std::string n) { name = n; }
+		std::string name;
+	};
+	auto second = std::make_shared<Flowable<Student>>([](std::shared_ptr<Observer<Student>> observer) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		observer->OnNext(Student("xxx"));
+	})
+		->SubscribeOn(ThreadType::k_Pool);
+	std::function<std::string(std::string, Student)> func = [](std::string word, Student student)->std::string {
+		return word + " " + student.name;
+	};
+	auto subscriber = std::make_shared<FlowSubscribe<std::string>>();
+	subscriber->SetOnNext([](std::string var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Value:" << var << std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	Flowable<std::string>::Zip(first, second, func)
+		->Subscribe(subscriber);
+}
+
+//test16 concat under thread
+void test16() 
+{
+	auto first = Flowable<std::string>::Instance([](std::shared_ptr<Observer<std::string>> observer) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+			observer->OnNext("123");
+			observer->OnCompleted();
+	})->SubscribeOn(ThreadType::k_Pool);
+	auto second = Flowable<std::string>::Instance([](std::shared_ptr<Observer<std::string>> observer) {
+		observer->OnNext("456");
+		observer->OnCompleted();
+	})->SubscribeOn(ThreadType::k_IoThread);
+	auto subscriber = std::make_shared<FlowSubscribe<std::string>>();
+	subscriber->SetOnNext([](std::string var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Value:" << var << std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	Flowable<std::string>::Concat({ first,second })
+		->Subscribe(subscriber);
+}
+
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test14();
+	test16();
 	while (true)
 	{
 	}
