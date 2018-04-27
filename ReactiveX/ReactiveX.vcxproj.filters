@@ -54,6 +54,12 @@
     <ClInclude Include="rx\operation\flowable_defer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\operation\flowable_interval.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\operation\flowable_range.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">

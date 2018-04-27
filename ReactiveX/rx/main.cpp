@@ -427,12 +427,28 @@ void test17()
 		->Subscribe(subscriber);
 }
 
+//test18 range
+void test18() 
+{
+	auto subscriber = std::make_shared<FlowSubscribe<int>>();
+	subscriber->SetOnNext([](int var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Value:" << var << std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	Flowable<int>::Range(1, 10,ThreadType::k_Pool)
+		->Subscribe(subscriber);
+}
+
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test17();
+	test18();
 	while (true)
 	{
 	}

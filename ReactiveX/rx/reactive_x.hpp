@@ -16,6 +16,7 @@
 #include "operation/flowable_merge.hpp"
 #include "operation/flowable_zip.hpp"
 #include "operation/flowable_defer.hpp"
+#include "operation/flowable_range.hpp"
 
 template<typename T>
 class Observer : public std::enable_shared_from_this<Observer<T>>
@@ -263,7 +264,7 @@ public:
 	
 	static std::shared_ptr<Flowable<T>> Interval(int init_delay,int period,const ThreadType& type) 
 	{
-
+		return std::shared_ptr<FlowableInterval<T>>(init_delay,period,type);
 	}
 	
 	std::shared_ptr<Flowable<T>> UnsubscribeOn(const ThreadType& type) 
@@ -309,7 +310,11 @@ public:
 	{
 		return std::make_shared<FlowableDefer<T>>(func);
 	}
-
+	
+	static std::shared_ptr<Flowable<T>> Range(int start,int end,ThreadType type) 
+	{
+		return std::make_shared<FlowableRange<T>>(start,end,type);
+	}
 
 	std::shared_ptr<Flowable<T>> TakeUntil(std::shared_ptr<Flowable<T>> until) 
 	{
@@ -320,33 +325,6 @@ public:
 
 public:
 	std::shared_ptr<OnSubscribe<T>> on_subscribe_;
-};
-
-class FlowableInterval :public Flowable<int> 
-{
-public:
-	FlowableInterval(int init_delay,int period,ThreadType type) 
-	{
-		init_delay_ = init_delay;
-		period_ = period;
-		type_ = type;
-		Init();
-	}
-
-	void Init() 
-	{
-		auto on_subscrice = std::make_shared<OnSubscribe<int>>();
-		auto func = [](std::shared_ptr<Observer<int>> subsriber) {
-			
-		};
-		on_subscrice->SetSubscribeCallback(func);
-		this->SetObSubcribe(on_subscrice);
-	}
-
-private:
-	int init_delay_ = 0;
-	int period_ = 0;
-	ThreadType type_;
 };
 
 template <typename T, typename R>
