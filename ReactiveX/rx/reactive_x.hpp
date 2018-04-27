@@ -15,6 +15,7 @@
 #include "operation/flowable_flatmap.hpp"
 #include "operation/flowable_merge.hpp"
 #include "operation/flowable_zip.hpp"
+#include "operation/flowable_defer.hpp"
 
 template<typename T>
 class Observer : public std::enable_shared_from_this<Observer<T>>
@@ -70,6 +71,17 @@ public:
 	void setTransformCallback(const std::function<R(T)>& func) { function_ = func; }
 public:
 	std::function<R(T)> function_;
+};
+
+template<typename T>
+class Callable 
+{
+public:
+	void SetCallback(std::function<std::shared_ptr<Flowable<T>>()> func)
+	{
+		func_ = func;
+	}
+	std::function<std::shared_ptr<Flowable<T>>()> func_;
 };
 
 template<typename T>
@@ -144,7 +156,6 @@ public:
 public:
 	std::function<R(Types...)> func_;
 };
-
 
 template <typename T, typename R> class MapOnSubscribe;
 
@@ -294,10 +305,18 @@ public:
 		return std::make_shared<FlowableZip2<T, T1, T2>>(observer_one, observer_two,func);
 	}
 
+	static std::shared_ptr<Flowable<T>> Defer(std::shared_ptr<Callable<T>> func) 
+	{
+		return std::make_shared<FlowableDefer<T>>(func);
+	}
+
+
 	std::shared_ptr<Flowable<T>> TakeUntil(std::shared_ptr<Flowable<T>> until) 
 	{
 		
 	}
+	
+
 
 public:
 	std::shared_ptr<OnSubscribe<T>> on_subscribe_;

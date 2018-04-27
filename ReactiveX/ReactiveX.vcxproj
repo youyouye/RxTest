@@ -149,6 +149,7 @@
     <ClInclude Include="rx\common.hpp" />
     <ClInclude Include="rx\operation\flowable_concat.hpp" />
     <ClInclude Include="rx\operation\flowable_create.hpp" />
+    <ClInclude Include="rx\operation\flowable_defer.hpp" />
     <ClInclude Include="rx\operation\flowable_flatmap.hpp" />
     <ClInclude Include="rx\operation\flowable_merge.hpp" />
     <ClInclude Include="rx\operation\flowable_observeon.hpp" />

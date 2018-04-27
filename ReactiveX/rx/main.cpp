@@ -407,12 +407,32 @@ void test16()
 		->Subscribe(subscriber);
 }
 
+//test17 defer
+void test17() 
+{
+	auto callback = std::make_shared<Callable<std::string>>();
+	callback->SetCallback([]()->std::shared_ptr<Flowable<std::string>> {
+		return Flowable<std::string>::Just("123");
+	});
+	auto subscriber = std::make_shared<FlowSubscribe<std::string>>();
+	subscriber->SetOnNext([](std::string var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Value:" << var << std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	Flowable<std::string>::Defer(callback)
+		->Subscribe(subscriber);
+}
+
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test16();
+	test17();
 	while (true)
 	{
 	}
