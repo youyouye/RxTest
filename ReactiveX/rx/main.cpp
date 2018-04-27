@@ -323,13 +323,35 @@ void test13()
 	Flowable<std::string>::Merge(flowable_one, flowable_two, flowable_three)
 		->Subscribe(subscriber);
 }
+//test14 zip
+void test14() 
+{
+	auto first = Flowable<std::string>::From({ "1.","2.","3." })
+		->SubscribeOn(ThreadType::k_Pool);
+	auto second = Flowable<int>::From({ 1,2,3 })
+		->SubscribeOn(ThreadType::k_Pool);
+	auto subscriber = std::make_shared<FlowSubscribe<float>>();
+	subscriber->SetOnNext([](float var) {
+		std::cout << "ThreadId:" << std::this_thread::get_id() << std::endl;
+		std::cout << "Value:" << var << std::endl;
+	});
+	subscriber->SetOnCompletion([]() {
+	});
+	subscriber->SetOnError([]() {
+	});
+	std::function<float(std::string,int)> func = [](std::string one,int two)->float{
+		return 2.5f;
+	};
+	Flowable<float>::Zip(first, second, func)
+		->Subscribe(subscriber);
+}
 
 void main() 
 {
 	//current thread
 	std::cout << std::this_thread::get_id() << std::endl;
 	ScheduleManager::Instance()->Start(5);
-	test13();
+	test14();
 	while (true)
 	{
 	}

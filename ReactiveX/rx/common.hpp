@@ -1,5 +1,9 @@
 #pragma once
 #include <memory>
+#include <tuple>
+#include <cstddef>
+#include <type_traits>
+#include <utility>
 
 template<typename T>
 struct enable_shared_from_this_virtual;
@@ -51,4 +55,3 @@ static inline typename std::enable_if < I < sizeof...(Tp), void>::type
 	f(std::get<I>(t));
 	for_each<I + 1, FuncT, Tp...>(t, f);
 }
-

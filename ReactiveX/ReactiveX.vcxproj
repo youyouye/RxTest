@@ -155,6 +155,7 @@
     <ClInclude Include="rx\operation\flowable_startwith.hpp" />
     <ClInclude Include="rx\operation\flowable_subscribeon.hpp" />
     <ClInclude Include="rx\operation\flowable_unsubscribe.hpp" />
+    <ClInclude Include="rx\operation\flowable_zip.hpp" />
     <ClInclude Include="rx\reactive_x.hpp" />
     <ClInclude Include="rx\schedule_manager.h" />
   </ItemGroup>

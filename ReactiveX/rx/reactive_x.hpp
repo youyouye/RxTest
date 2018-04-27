@@ -14,11 +14,13 @@
 #include "operation/flowable_concat.hpp"
 #include "operation/flowable_flatmap.hpp"
 #include "operation/flowable_merge.hpp"
+#include "operation/flowable_zip.hpp"
 
 template<typename T>
 class Observer : public std::enable_shared_from_this<Observer<T>>
 {
 public:
+	typedef T value_type;
 	Observer() {}
 	Observer(const std::function<void(T var)> &on_next,const std::function<void()> &on_complete,
 		const std::function<void()> &on_error)
@@ -131,12 +133,27 @@ public:
 	std::shared_ptr<Transformer<R, T>> transformer_;
 };
 
+template<typename R,typename ...Types>
+class ZipTransformer 
+{
+public:
+	void SetCallback(std::function<R(Types...)> func)
+	{
+		func_ = func;
+	}
+public:
+	std::function<R(Types...)> func_;
+};
+
+
 template <typename T, typename R> class MapOnSubscribe;
 
 template<typename T>
 class Flowable : public std::enable_shared_from_this<Flowable<T>>
 {
 public:
+	typedef T value_type;
+
 	Flowable() {}
 
 	Flowable(std::shared_ptr<OnSubscribe<T>> onscriber) 
@@ -266,7 +283,13 @@ public:
 	{
 		return std::make_shared<FlowableMerge<T,Args...>>(std::make_tuple(params...));
 	}
-
+	
+	template<typename T1,typename T2>
+	static std::shared_ptr<Flowable<T>> Zip(std::shared_ptr<Flowable<T1>> observer_one,
+		std::shared_ptr<Flowable<T2>> observer_two,std::function<T(T1,T2)> func)
+	{
+		return std::make_shared<FlowableZip2<T, T1, T2>>(observer_one, observer_two,func);
+	}
 
 public:
 	std::shared_ptr<OnSubscribe<T>> on_subscribe_;
