@@ -15,49 +15,46 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rx\reactive_x.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="rx\schedule_manager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="rx\operation\flowable_create.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="rx\operation\flowable_unsubscribe.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="rx\operation\flowable_startwith.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="rx\operation\flowable_subscribeon.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="rx\operation\flowable_observeon.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="rx\common.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_concat.hpp">
+    <ClInclude Include="rx\rx_base.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_flatmap.hpp">
+    <ClInclude Include="rx\rx_flowable.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_merge.hpp">
+    <ClInclude Include="rx\rx_emitter.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_zip.hpp">
+    <ClInclude Include="rx\rx_callable.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_defer.hpp">
+    <ClInclude Include="rx\rx_onsubscribe.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_interval.hpp">
+    <ClInclude Include="rx\rx_operation\flowable_create.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\operation\flowable_range.hpp">
+    <ClInclude Include="rx\safe_queue.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_just.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_subscriber.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_subscribeon.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_observeon.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_disposable.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
