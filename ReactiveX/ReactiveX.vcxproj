@@ -147,23 +147,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rx\common.hpp" />
-    <ClInclude Include="rx\rx_disposable.hpp" />
-    <ClInclude Include="rx\rx_operation\flowable_just.hpp" />
-    <ClInclude Include="rx\rx_operation\flowable_observeon.hpp" />
-    <ClInclude Include="rx\rx_operation\flowable_subscribeon.hpp" />
-    <ClInclude Include="rx\rx_subscriber.hpp" />
-    <ClInclude Include="rx\safe_queue.hpp" />
-    <ClInclude Include="rx\rx_callable.hpp" />
-    <ClInclude Include="rx\rx_emitter.hpp" />
-    <ClInclude Include="rx\rx_flowable.hpp" />
     <ClInclude Include="rx\rx_base.hpp" />
-    <ClInclude Include="rx\rx_onsubscribe.hpp" />
-    <ClInclude Include="rx\rx_operation\flowable_create.hpp" />
+    <ClInclude Include="rx\rx_callback.hpp" />
+    <ClInclude Include="rx\rx_flowable.hpp" />
+    <ClInclude Include="rx\rx_operation\flowable_just.hpp" />
+    <ClInclude Include="rx\rx_operation\flowable_subscribe_on.hpp" />
+    <ClInclude Include="rx\rx_subscriber.hpp" />
+    <ClInclude Include="rx\rx_test\rx_base_test.hpp" />
+    <ClInclude Include="rx\rx_test\rx_manager_test.hpp" />
+    <ClCompile Include="rx\rx_test\rx_subscribe_on_test.hpp" />
+    <ClCompile Include="rx\safe_queue.hpp" />
     <ClInclude Include="rx\schedule_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp" />
+    <ClCompile Include="rx\rx_test\rx_just_test.hpp" />
     <ClCompile Include="rx\schedule_manager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rx\rx_common.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

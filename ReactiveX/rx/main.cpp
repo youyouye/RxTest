@@ -1,36 +1,17 @@
 #include <iostream>
 #include <string>
-#include "rx_flowable.hpp"
-#include "rx_subscriber.hpp"
 #include "schedule_manager.h"
+#include "rx_test/rx_manager_test.hpp"
 
-//test just
-void test1() 
+void test_just() 
 {
-	auto subscriber = std::make_shared<FlowableSubscriber<std::string>>();
-	subscriber->SetOnNext([](const std::string& item) {
-		std::cout << "on next:" << item << std::endl;
-	});
-
-	Flowable<std::string>::Just("123")
-		->Subscribe(subscriber);
-}
-//test create
-void test2() 
-{
-	auto subscriber = std::make_shared<FlowableSubscriber<int>>();
-	subscriber->SetOnNext([](const int& item) {
-		std::cout << "on next:" << item << std::endl;
-	});
-	auto on_subscribe = std::make_shared<FlowableOnSubscribe<int>>();
-//	Flowable<int>::Create()
-//		->Subscribe(subscriber);
+	
 }
 
-void main() 
+void main()
 {
 	ScheduleManager::Instance()->Start(5);
-	test2();
+	RxTestManager::Instance()->RunAllTest();
 	while (true)
 	{
 	}

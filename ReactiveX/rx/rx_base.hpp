@@ -1,35 +1,44 @@
 #pragma once
 #include <memory>
+#include <atomic>
+#include "rx_common.hpp"
 
-class Subscription 
+class Subscription
 {
 public:
 	virtual ~Subscription() {}
-	virtual void Request(long n) {}
-	virtual void Cancel() {}
+	virtual void Request(int n) = 0;
+	virtual void Cancel() = 0;
+protected:
+	std::atomic_int request_state_ = 0;	//0 k_no_request,1 k_requested,2 k_cancelled
+	std::atomic_int request_num_ = 0;
+	std::atomic_int player_num_ = 0;
+	//test num
+	int k_no_request = 0;
+	int k_requested = 1;
+	int k_cancelled = 2;
 };
 
 template<typename T>
-class Subscriber 
+class Subscriber
 {
 public:
 	virtual ~Subscriber() {}
-	virtual void OnSubscribe(std::shared_ptr<Subscription> s) {}
-	virtual void OnNext(const T& t) {}
-	virtual void OnError() {}
-	virtual void OnComplete() {}
+	virtual void OnSubscribe(std::shared_ptr<Subscription> subscription) = 0;
+	virtual void OnNext(const T &t) = 0;
+	virtual void OnComplete() = 0;
 };
 
 template<typename T>
-class Publisher 
+class Publisher
 {
 public:
 	virtual ~Publisher() {}
-	virtual void Subscribe(std::shared_ptr<Subscriber<T>> s) {}
+	virtual void Subscribe(std::shared_ptr<Subscriber<T>> subscriber) = 0;
 };
 
-template<typename T,typename R>
-class Processor : public Subscriber<T>,public Publisher<R>
+template<typename T, typename R>
+class Processor : public Subscriber<T>, Publisher<R>
 {
 	virtual ~Processor() {}
 };
