@@ -4,22 +4,23 @@
 #include "../rx_flowable.hpp"
 #include "../rx_subscriber.hpp"
 
-class RxSubscribeOnTest : public RxTest 
+class RxObserveOnTest : public RxTest 
 {
 public:
-	RxSubscribeOnTest() {}
+	RxObserveOnTest() {}
+
 	std::wstring Run()
 	{
 		auto rx = Flowable<int>::Just(11)
-			->SubscribeOn(ThreadType::k_Pool);
+			->SubscribeOn(ThreadType::k_Pool)
+			->ObserveOn(ThreadType::k_IoThread);
 
 		auto subscriber = std::make_shared<FlowableSubscriber<int>>();
 		subscriber->SetOnSubscribeCallback([](std::shared_ptr<Subscription> subscriber) {
 			std::cout << "on subscribe!  " << std::this_thread::get_id() << std::endl;
-			subscriber->Request(1);
 		});
 		subscriber->SetOnNextCallback([](const int& item) {
-			std::cout << "on next!" << item << "   " <<std::this_thread::get_id() << std::endl;
+			std::cout << "on next!" << item << "   " << std::this_thread::get_id() << std::endl;
 		});
 		subscriber->SetOnCompleteCallback([]() {
 			std::cout << "on complete!   " << std::this_thread::get_id() << std::endl;

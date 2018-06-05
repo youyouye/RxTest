@@ -25,5 +25,4 @@ public:
 		rx->Subscribe(subscriber);
 		return L"finish";
 	}
-
 };

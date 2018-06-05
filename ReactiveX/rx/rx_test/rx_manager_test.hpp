@@ -4,6 +4,7 @@
 #include <iostream>
 #include "rx_just_test.hpp"
 #include "rx_subscribe_on_test.hpp"
+#include "rx_observe_on_test.hpp"
 
 class RxTestManager 
 {
@@ -26,9 +27,11 @@ public:
 	void Init() 
 	{
 		auto rx_just_test = std::make_shared<RxJustTest>();
-		test_cases_.insert({L"just test",rx_just_test});
-		auto rx_observer_on_test = std::make_shared<RxSubscribeOnTest>();
-		test_cases_.insert({ L"subscribeOn test",rx_observer_on_test });
+//		test_cases_.insert({L"just test",rx_just_test});
+		auto rx_subscribe_on_test = std::make_shared<RxSubscribeOnTest>();
+//		test_cases_.insert({ L"subscribeOn test",rx_subscribe_on_test });
+		auto rx_observe_on_test = std::make_shared<RxObserveOnTest>();
+		test_cases_.insert({L"observeOn test",rx_observe_on_test});
 	}
 
 	void RunAllTest() 

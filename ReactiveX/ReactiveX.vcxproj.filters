@@ -21,9 +21,6 @@
     <ClInclude Include="rx\common.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rx\safe_queue.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="rx\rx_test\rx_manager_test.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
     <ClInclude Include="rx\rx_operation\flowable_subscribe_on.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_observe_on.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">
@@ -60,6 +60,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="rx\rx_test\rx_subscribe_on_test.hpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="rx\safe_queue.hpp">
+      <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="rx\rx_test\rx_observe_on_test.hpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

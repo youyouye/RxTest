@@ -11,12 +11,11 @@ public:
 	virtual void Cancel() = 0;
 protected:
 	std::atomic_int request_state_ = 0;	//0 k_no_request,1 k_requested,2 k_cancelled
-	std::atomic_int request_num_ = 0;
-	std::atomic_int player_num_ = 0;
 	//test num
-	int k_no_request = 0;
-	int k_requested = 1;
-	int k_cancelled = 2;
+	int k_start = 0;
+	int k_on_next = 1;
+	int k_on_complete = 2;
+	int k_cancelled = 3;
 };
 
 template<typename T>
@@ -27,6 +26,11 @@ public:
 	virtual void OnSubscribe(std::shared_ptr<Subscription> subscription) = 0;
 	virtual void OnNext(const T &t) = 0;
 	virtual void OnComplete() = 0;
+	
+	std::atomic_bool complete_flag = false;
+	std::atomic_bool cancel_flag = false;
+	std::atomic_int request_num_ = 0;
+	std::atomic_int player_num_ = 0;
 };
 
 template<typename T>

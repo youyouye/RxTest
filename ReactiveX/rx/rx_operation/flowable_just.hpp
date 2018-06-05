@@ -17,7 +17,9 @@ public:
 
 	void SubscribeActual(std::shared_ptr<Subscriber<T>> subscriber) override
 	{
-		subscriber->OnSubscribe(std::make_shared<JustSubscription<T>>(subscriber, value_));
+		auto subscription = std::make_shared<JustSubscription<T>>(subscriber, value_);
+		subscriber->OnSubscribe(subscription);
+		subscription->ChangeState();
 	}
 private:
 	T value_;
@@ -34,19 +36,24 @@ public:
 
 	void Request(int n) override
 	{
-		if (request_state_.compare_exchange_strong(k_no_request, k_requested))
-		{
-			subscriber_->OnNext(value_);
-			if (request_state_ != k_cancelled)
-			{
-				subscriber_->OnComplete();
-			}
-		}
 	}
 
 	void Cancel() override
 	{
 		request_state_ = k_cancelled;
+	}
+
+	void ChangeState() 
+	{
+		if (request_state_.compare_exchange_strong(k_start,k_on_next))
+		{
+			subscriber_->OnNext(value_);
+			if (request_state_ == k_on_next)
+			{
+				request_state_ = k_on_complete;
+				subscriber_->OnComplete();
+			}
+		}
 	}
 
 private:
