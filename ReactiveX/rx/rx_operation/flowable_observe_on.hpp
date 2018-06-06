@@ -86,11 +86,10 @@ public:
 				return;
 			for (;;)
 			{
-				T value;
-				bool empty = queue_.Take(value);
-				if (CheckTerminal(empty))
-					return;
+				T value = queue_.Take();
 				actual_->OnNext(value);
+				if (CheckTerminal(queue_.Empty()))
+					return;
 			}
 			missed -= missed;
 			if (missed == 0)

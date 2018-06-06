@@ -23,6 +23,21 @@ public:
 			std::cout << "on complete!" << std::endl;
 		});
 		rx->Subscribe(subscriber);
+		//just array
+		auto rx2 = Flowable<int>::Just(std::vector<int>({1,2,3}));
+		auto subscriber2 = std::make_shared<FlowableSubscriber<int>>();
+		subscriber2->SetOnSubscribeCallback([](std::shared_ptr<Subscription> subscriber) {
+			std::cout << "on subscribe!" << std::endl;
+			subscriber->Request(1);
+		});
+		subscriber2->SetOnNextCallback([](const int& item) {
+			std::cout << "on next!" << item << std::endl;
+		});
+		subscriber2->SetOnCompleteCallback([]() {
+			std::cout << "on complete!" << std::endl;
+		});
+		rx2->Subscribe(subscriber2);
+
 		return L"finish";
 	}
 };

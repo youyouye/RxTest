@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "rx_base.hpp"
 #include "schedule_manager.h"
 #include "rx_operation/flowable_just.hpp"
@@ -23,6 +24,11 @@ public:
 		return std::make_shared<FlowableJust<T>>(item);
 	}
 
+	static std::shared_ptr<Flowable<T>> Just(const std::vector<T> items) 
+	{
+		return std::make_shared<FlowableJust<T>>(items);
+	}
+	
 	std::shared_ptr<Flowable<T>> SubscribeOn(const ThreadType &type)
 	{
 		return std::make_shared<FlowableSubscribeOn<T>>(shared_from_this(),type);

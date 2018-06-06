@@ -14,29 +14,28 @@ public:
 		queue_.push(std::move(x));
 	}
 	//return empty
-	bool Take(T &val) 
+	T Take() 
 	{
 		std::lock_guard<std::mutex> lock(mutex_);
 		if (!queue_.empty())
 		{
 			T value(std::move(queue_.front()));
 			queue_.pop();
-			val = value;
-			return false;
+			return value;
 		}
-		return true;
 	}
 
 	bool Empty() const 
 	{
-//		std::lock_guard<std::mutex> lock(mutex_);
+//		std::lock_guard<std::mutex> temp_lock(mutex_);
 		return queue_.empty();
 	}
 	
 	void Clear() const 
 	{
-//		std::lock_guard<std::mutex> lock(mutex_);
-//		queue_.swap(std::queue<T>());
+//		std::lock_guard<std::mutex> temp_lock(mutex_);
+//		std::queue<T> empty;
+//		std::swap(queue_, empty);
 	}
 
 private:

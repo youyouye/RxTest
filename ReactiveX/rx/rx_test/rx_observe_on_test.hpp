@@ -11,7 +11,7 @@ public:
 
 	std::wstring Run()
 	{
-		auto rx = Flowable<int>::Just(11)
+		auto rx = Flowable<int>::Just(std::vector<int>{1,2,3,4,5})
 			->SubscribeOn(ThreadType::k_Pool)
 			->ObserveOn(ThreadType::k_IoThread);
 
