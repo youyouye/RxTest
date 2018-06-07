@@ -3,12 +3,22 @@
 #include <atomic>
 #include "rx_common.hpp"
 
+enum class SubscriptionType 
+{
+	k_queue_type,
+	k_normal_type,
+};
+
 class Subscription
 {
 public:
 	virtual ~Subscription() {}
 	virtual void Request(int n) = 0;
 	virtual void Cancel() = 0;
+	void SetFusionMode(bool fusion_flag) { fusion_mode_flag = fusion_flag; }
+	bool GetFusionMode() { return fusion_mode_flag; }
+public:
+	SubscriptionType type_ = SubscriptionType::k_normal_type;
 protected:
 	std::atomic_int request_state_ = 0;	//0 k_no_request,1 k_requested,2 k_cancelled
 	//test num
@@ -16,6 +26,7 @@ protected:
 	int k_on_next = 1;
 	int k_on_complete = 2;
 	int k_cancelled = 3;
+	bool fusion_mode_flag = false;
 };
 
 template<typename T>

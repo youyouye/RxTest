@@ -24,7 +24,7 @@ public:
 		});
 		rx->Subscribe(subscriber);
 		//just array
-		auto rx2 = Flowable<int>::Just(std::vector<int>({1,2,3}));
+		auto rx2 = Flowable<int>::Just(1,2,3);
 		auto subscriber2 = std::make_shared<FlowableSubscriber<int>>();
 		subscriber2->SetOnSubscribeCallback([](std::shared_ptr<Subscription> subscriber) {
 			std::cout << "on subscribe!" << std::endl;

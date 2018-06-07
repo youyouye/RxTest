@@ -9,14 +9,24 @@ template<typename T>
 class FlowableJust :public Flowable<T>
 {
 public:
-	
 	FlowableJust(const T& value)
+		:values_({value})
 	{
-		values_.push_back(value);
 	}
-
-	FlowableJust(const std::vector<T>& values)
-		:values_(values)
+	FlowableJust(const T& item1, const T& item2)
+		:values_({ item1,item2 })
+	{
+	}
+	FlowableJust(const T& item1, const T& item2, const T& item3)
+		:values_({ item1,item2,item3 })
+	{
+	}
+	FlowableJust(const T& item1, const T& item2, const T& item3, const T& item4)
+		:values_({ item1,item2,item3,item4 })
+	{
+	}
+	FlowableJust(const T& item1, const T& item2, const T& item3, const T& item4, const T& item5)
+		:values_({ item1,item2,item3,item4,item5 })
 	{
 	}
 

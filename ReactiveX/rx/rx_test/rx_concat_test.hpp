@@ -1,17 +1,17 @@
+#pragma once
 #include <iostream>
-#include <thread>
+#include <string>
 #include "rx_base_test.hpp"
 #include "../rx_flowable.hpp"
 #include "../rx_subscriber.hpp"
 
-class RxObserveOnTest : public RxTest 
+class RxConcatTest : public RxTest 
 {
 public:
-	RxObserveOnTest() {}
-
+	RxConcatTest() {}
 	std::wstring Run()
 	{
-		auto rx = Flowable<int>::Just(1,2,3,4,5)
+		auto rx = Flowable<int>::Just(1, 2, 3, 4, 5)
 			->SubscribeOn(ThreadType::k_Pool)
 			->ObserveOn(ThreadType::k_IoThread);
 
@@ -26,6 +26,13 @@ public:
 			std::cout << "on complete!   " << std::this_thread::get_id() << std::endl;
 		});
 		rx->Subscribe(subscriber);
+
+		auto rx2 = Flowable<int>::Just(9,10,11)
+			->SubscribeOn(ThreadType::k_IoThread)
+			->ObserveOn(ThreadType::k_MainThread);
+		rx2->Subscribe(subscriber);
+		auto rx3 = Flowable<int>::Concat(rx,rx2);
+		rx3->Subscribe(subscriber);
 
 		return L"finish";
 	}

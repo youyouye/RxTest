@@ -23,6 +23,7 @@ public:
 			queue_.pop();
 			return value;
 		}
+		return T();
 	}
 
 	bool Empty() const 

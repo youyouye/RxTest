@@ -150,11 +150,14 @@
     <ClInclude Include="rx\rx_base.hpp" />
     <ClInclude Include="rx\rx_callback.hpp" />
     <ClInclude Include="rx\rx_flowable.hpp" />
+    <ClInclude Include="rx\rx_operation\flowable_concat.hpp" />
+    <ClInclude Include="rx\rx_operation\flowable_from_array.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_just.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_subscribe_on.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_observe_on.hpp" />
     <ClInclude Include="rx\rx_subscriber.hpp" />
     <ClInclude Include="rx\rx_test\rx_base_test.hpp" />
+    <ClInclude Include="rx\rx_test\rx_concat_test.hpp" />
     <ClInclude Include="rx\rx_test\rx_manager_test.hpp" />
     <ClCompile Include="rx\rx_test\rx_observe_on_test.hpp" />
     <ClCompile Include="rx\rx_test\rx_subscribe_on_test.hpp" />

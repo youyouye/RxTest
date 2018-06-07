@@ -48,6 +48,15 @@
     <ClInclude Include="rx\rx_operation\flowable_observe_on.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\rx_test\rx_concat_test.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_concat.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_from_array.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">
