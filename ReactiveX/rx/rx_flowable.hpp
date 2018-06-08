@@ -73,6 +73,7 @@ public:
 		return std::make_shared<FlowableFromArray<T>>(std::vector<T>{item1, item2, item3,item4,item5});
 	}
 	//item
+	/*
 	static std::shared_ptr<Flowable<T>> FromArray(std::shared_ptr<Flowable<T>> item1, std::shared_ptr<Flowable<T>> item2)
 	{
 		return std::make_shared<FlowableFromArray<T>>(std::vector<std::shared_ptr<Flowable<T>>>{item1, item2});
@@ -82,25 +83,26 @@ public:
 	{
 		return std::make_shared<FlowableFromArray<T>>(std::vector<std::shared_ptr<Flowable<T>>>{item1, item2, item3});
 	}
+	*/
 
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2)
 	{
-		return std::make_shared<FlowableConcat<T>>(FromArray(source1, source2));
+		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2});
 	}
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
 		std::shared_ptr<Flowable<T>> source3)
 	{
-		return std::make_shared<FlowableConcat<T>>(FromArray(source1, source2, source3));
+		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3});
 	}
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
 		std::shared_ptr<Flowable<T>> source3, std::shared_ptr<Flowable<T>> source4)
 	{
-		return std::make_shared<FlowableConcat<T>>(FromArray(source1, source2, source3, source4));
+		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3, source4});
 	}
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
 		std::shared_ptr<Flowable<T>> source3, std::shared_ptr<Flowable<T>> source4, std::shared_ptr<Flowable<T>> source5)
 	{
-		return std::make_shared<FlowableConcat<T>>(FromArray(source1, source2, source3, source4, source5));
+		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3, source4, source5});
 	}
 
 protected:

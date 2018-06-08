@@ -18,7 +18,7 @@ public:
 	void SubscribeActual(std::shared_ptr<Subscriber<T>> subscriber) override 
 	{
 		auto rx_subscriber = std::make_shared<SubscribeOnSubscriber<T>>(subscriber, type_);
-		subscriber->OnSubscribe(rx_subscriber);
+		subscriber->OnSubscribe(rx_subscriber);		//how prefect
 		auto self = std::static_pointer_cast<FlowableSubscribeOn<T>>(shared_from_this());
 		ScheduleManager::Instance()->PostThread(type_, [self, rx_subscriber]() {
 			self->upstream_->Subscribe(rx_subscriber);
