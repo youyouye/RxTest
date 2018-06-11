@@ -7,6 +7,7 @@
 #include "rx_operation/flowable_observe_on.hpp"
 #include "rx_operation/flowable_concat.hpp"
 #include "rx_operation/flowable_from_array.hpp"
+#include "rx_operation/flowable_merge.hpp"
 
 template<typename T>
 class Flowable : public Publisher<T>,
@@ -104,7 +105,25 @@ public:
 	{
 		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3, source4, source5});
 	}
-
+	static std::shared_ptr<Flowable<T>> Merge(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2)
+	{
+		return std::make_shared<FlowableMerge<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1,source2});
+	}
+	static std::shared_ptr<Flowable<T>> Merge(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
+		std::shared_ptr<Flowable<T>> source3)
+	{
+		return std::make_shared<FlowableMerge<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2,source3});
+	}
+	static std::shared_ptr<Flowable<T>> Merge(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
+		std::shared_ptr<Flowable<T>> source3, std::shared_ptr<Flowable<T>> source4)
+	{
+		return std::make_shared<FlowableMerge<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3,source4});
+	}
+	static std::shared_ptr<Flowable<T>> Merge(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
+		std::shared_ptr<Flowable<T>> source3, std::shared_ptr<Flowable<T>> source4, std::shared_ptr<Flowable<T>> source5)
+	{
+		return std::make_shared<FlowableMerge<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3, source4,source5});
+	}
 protected:
 	virtual void SubscribeActual(std::shared_ptr<Subscriber<T>> subscriber) {}
 };

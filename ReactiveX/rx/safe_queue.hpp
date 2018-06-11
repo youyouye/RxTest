@@ -7,7 +7,6 @@ class SafeQueue
 {
 public:
 	SafeQueue() {}
-
 	void Put(const T& x) 
 	{
 		std::lock_guard<std::mutex> lock(mutex_);

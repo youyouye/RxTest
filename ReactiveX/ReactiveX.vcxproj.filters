@@ -57,6 +57,12 @@
     <ClInclude Include="rx\rx_operation\flowable_from_array.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_merge.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_test\rx_merge_test.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">
