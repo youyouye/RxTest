@@ -2,12 +2,14 @@
 #include <vector>
 #include "rx_base.hpp"
 #include "schedule_manager.h"
+#include "rx_on_subscribe.hpp"
 #include "rx_operation/flowable_just.hpp"
 #include "rx_operation/flowable_subscribe_on.hpp"
 #include "rx_operation/flowable_observe_on.hpp"
 #include "rx_operation/flowable_concat.hpp"
 #include "rx_operation/flowable_from_array.hpp"
 #include "rx_operation/flowable_merge.hpp"
+#include "rx_operation/flowable_create.hpp"
 
 template<typename T>
 class Flowable : public Publisher<T>,
@@ -124,6 +126,11 @@ public:
 	{
 		return std::make_shared<FlowableMerge<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2, source3, source4,source5});
 	}
+	static std::shared_ptr<Flowable<T>> Create(std::shared_ptr<FlowableOnSubscribe<T>> source) 
+	{
+		return std::make_shared<FlowableCreate<T>>(source);
+	}
+
 protected:
 	virtual void SubscribeActual(std::shared_ptr<Subscriber<T>> subscriber) {}
 };

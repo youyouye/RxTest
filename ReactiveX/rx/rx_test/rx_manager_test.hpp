@@ -7,6 +7,7 @@
 #include "rx_observe_on_test.hpp"
 #include "rx_concat_test.hpp"
 #include "rx_merge_test.hpp"
+#include "rx_create_test.hpp"
 
 class RxTestManager 
 {
@@ -37,7 +38,9 @@ public:
 		auto rx_concat_test = std::make_shared<RxConcatTest>();
 //		test_cases_.insert({L"concat test",rx_concat_test});
 		auto rx_merge = std::make_shared<RxMergeTest>();
-		test_cases_.insert({L"merge test", rx_merge});
+//		test_cases_.insert({L"merge test", rx_merge});
+		auto rx_create = std::make_shared<RxCreateTest>();
+		test_cases_.insert({L"create test",rx_create});
 	}
 
 	void RunAllTest() 
