@@ -1,3 +1,4 @@
+#pragma once
 #include <functional>
 #include "rx_base.hpp"
 #include "rx_callback.hpp"
@@ -6,10 +7,9 @@ template<typename T>
 class FlowableEmitter 
 {
 public:
-	virtual void OnNext(const T &t) = 0;
-	virtual void OnComplete() = 0;
+	virtual void OnNext(const T &t) {}
+	virtual void OnComplete() {}
 };
-
 
 template<typename T>
 class FlowableOnSubscribe 

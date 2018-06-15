@@ -153,6 +153,7 @@
     <ClInclude Include="rx\rx_on_subscribe.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_concat.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_create.hpp" />
+    <ClInclude Include="rx\rx_operation\flowable_flatmap.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_from_array.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_just.hpp" />
     <ClInclude Include="rx\rx_operation\flowable_merge.hpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="rx\rx_test\rx_base_test.hpp" />
     <ClInclude Include="rx\rx_test\rx_concat_test.hpp" />
     <ClInclude Include="rx\rx_test\rx_create_test.hpp" />
+    <ClInclude Include="rx\rx_test\rx_flatmap_test.hpp" />
     <ClInclude Include="rx\rx_test\rx_manager_test.hpp" />
     <ClCompile Include="rx\rx_test\rx_observe_on_test.hpp" />
     <ClCompile Include="rx\rx_test\rx_subscribe_on_test.hpp" />

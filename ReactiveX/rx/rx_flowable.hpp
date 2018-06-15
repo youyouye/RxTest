@@ -10,6 +10,7 @@
 #include "rx_operation/flowable_from_array.hpp"
 #include "rx_operation/flowable_merge.hpp"
 #include "rx_operation/flowable_create.hpp"
+#include "rx_operation/flowable_flatmap.hpp"
 
 template<typename T>
 class Flowable : public Publisher<T>,
@@ -129,6 +130,13 @@ public:
 	static std::shared_ptr<Flowable<T>> Create(std::shared_ptr<FlowableOnSubscribe<T>> source) 
 	{
 		return std::make_shared<FlowableCreate<T>>(source);
+	}
+
+	template<typename R>
+	std::shared_ptr<Flowable<R>> FlatMap(const std::function<std::shared_ptr<Flowable<R>>(const T& item)>& mapper) 
+	{
+		auto self = shared_from_this();
+		return std::make_shared<FlowableFlatMap<T,R>>(self,mapper);
 	}
 
 protected:

@@ -8,6 +8,7 @@
 #include "rx_concat_test.hpp"
 #include "rx_merge_test.hpp"
 #include "rx_create_test.hpp"
+#include "rx_flatmap_test.hpp"
 
 class RxTestManager 
 {
@@ -40,7 +41,9 @@ public:
 		auto rx_merge = std::make_shared<RxMergeTest>();
 //		test_cases_.insert({L"merge test", rx_merge});
 		auto rx_create = std::make_shared<RxCreateTest>();
-		test_cases_.insert({L"create test",rx_create});
+//		test_cases_.insert({L"create test",rx_create});
+		auto rx_flatmap = std::make_shared<RxFlatMap>();
+		test_cases_.insert({L"flatMap test",rx_flatmap});
 	}
 
 	void RunAllTest() 

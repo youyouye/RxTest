@@ -72,6 +72,12 @@
     <ClInclude Include="rx\rx_test\rx_create_test.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\rx_test\rx_flatmap_test.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rx\rx_operation\flowable_flatmap.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">
