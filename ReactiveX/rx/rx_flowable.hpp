@@ -11,6 +11,7 @@
 #include "rx_operation/flowable_merge.hpp"
 #include "rx_operation/flowable_create.hpp"
 #include "rx_operation/flowable_flatmap.hpp"
+#include "rx_operation/flowable_zip.hpp"
 
 template<typename T>
 class Flowable : public Publisher<T>,
@@ -131,12 +132,17 @@ public:
 	{
 		return std::make_shared<FlowableCreate<T>>(source);
 	}
-
 	template<typename R>
 	std::shared_ptr<Flowable<R>> FlatMap(const std::function<std::shared_ptr<Flowable<R>>(const T& item)>& mapper) 
 	{
 		auto self = shared_from_this();
 		return std::make_shared<FlowableFlatMap<T,R>>(self,mapper);
+	}
+	template<typename T1,typename T2>
+	static std::shared_ptr<Flowable<T>> Zip(std::shared_ptr<Flowable<T1>> source1,std::shared_ptr<Flowable<T2>> source2,
+		std::function<T(const T1&,const T2&)> zipper) 
+	{
+		return std::make_shared<FlowableZip<T1,T2,T>>(source1,source2,zipper);
 	}
 
 protected:

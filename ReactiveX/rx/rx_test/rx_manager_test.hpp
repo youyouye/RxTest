@@ -9,6 +9,7 @@
 #include "rx_merge_test.hpp"
 #include "rx_create_test.hpp"
 #include "rx_flatmap_test.hpp"
+#include "rx_zip_test.hpp"
 
 class RxTestManager 
 {
@@ -43,7 +44,9 @@ public:
 		auto rx_create = std::make_shared<RxCreateTest>();
 //		test_cases_.insert({L"create test",rx_create});
 		auto rx_flatmap = std::make_shared<RxFlatMap>();
-		test_cases_.insert({L"flatMap test",rx_flatmap});
+//		test_cases_.insert({L"flatMap test",rx_flatmap});
+		auto rx_zip = std::make_shared<RxZipTest>();
+		test_cases_.insert({L"zip test", rx_zip});
 	}
 
 	void RunAllTest() 

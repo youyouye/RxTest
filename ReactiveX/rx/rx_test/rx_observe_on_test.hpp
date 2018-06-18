@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <thread>
 #include "rx_base_test.hpp"
