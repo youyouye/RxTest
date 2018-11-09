@@ -24,18 +24,18 @@ public:
 		}
 		return T();
 	}
-
-	bool Empty() const 
+	
+	bool Empty()
 	{
-//		std::lock_guard<std::mutex> temp_lock(mutex_);
+		std::lock_guard<std::mutex> temp_lock(mutex_);
 		return queue_.empty();
 	}
 	
-	void Clear() const 
+	void Clear()
 	{
-//		std::lock_guard<std::mutex> temp_lock(mutex_);
-//		std::queue<T> empty;
-//		std::swap(queue_, empty);
+		std::lock_guard<std::mutex> temp_lock(mutex_);
+		std::queue<T> empty;
+		std::swap(queue_, empty);
 	}
 
 private:

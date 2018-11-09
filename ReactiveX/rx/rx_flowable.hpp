@@ -12,6 +12,8 @@
 #include "rx_operation/flowable_create.hpp"
 #include "rx_operation/flowable_flatmap.hpp"
 #include "rx_operation/flowable_zip.hpp"
+#include "rx_operation/flowable_timer.hpp"
+#include "rx_operation/flowable_take_while.hpp"
 
 template<typename T>
 class Flowable : public Publisher<T>,
@@ -143,6 +145,17 @@ public:
 		std::function<T(const T1&,const T2&)> zipper) 
 	{
 		return std::make_shared<FlowableZip<T1,T2,T>>(source1,source2,zipper);
+	}
+	
+	static std::shared_ptr<Flowable<T>> Timer(int delay, const ThreadType &type)
+	{
+		return std::make_shared<FlowableTimer<T>>(delay,type);
+	}
+	
+	std::shared_ptr<Flowable<T>> TakeWhile(const std::function<bool(const T& item)> &predicate) 
+	{
+		auto self = shared_from_this();
+		return std::make_shared<FlowableTakeWhile<T>>(self,predicate);
 	}
 
 protected:

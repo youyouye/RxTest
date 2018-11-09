@@ -2,7 +2,7 @@
 #include <atomic>
 #include "../rx_base.hpp"
 #include "../rx_flowable.hpp"
-#include "safe_queue.hpp"
+#include "../safe_queue.hpp"
 
 template<typename T>
 class Flowable;
