@@ -1,2 +1,0 @@
-# RxTest
-test for rx
