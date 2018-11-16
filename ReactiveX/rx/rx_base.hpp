@@ -3,6 +3,11 @@
 #include <atomic>
 #include "rx_common.hpp"
 
+class Error
+{
+public:
+};
+
 class Subscription
 {
 public:
@@ -19,6 +24,7 @@ public:
 	virtual void OnSubscribe(std::shared_ptr<Subscription> subscription) = 0;
 	virtual void OnNext(const T &t) = 0;
 	virtual void OnComplete() = 0;
+	virtual void OnError(Error error) = 0;
 };
 
 template<typename T>
