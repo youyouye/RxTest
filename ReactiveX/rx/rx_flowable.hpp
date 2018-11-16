@@ -49,7 +49,7 @@ public:
 		return std::make_shared<FlowableJust<T>>(item1, item2,item3,item4,item5);
 	}
 
-	
+	/*
 	std::shared_ptr<Flowable<T>> SubscribeOn(const ThreadType &type)
 	{
 		return std::make_shared<FlowableSubscribeOn<T>>(shared_from_this(),type);
@@ -90,8 +90,6 @@ public:
 	{
 		return std::make_shared<FlowableFromArray<T>>(std::vector<std::shared_ptr<Flowable<T>>>{item1, item2, item3});
 	}
-	*/
-
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2)
 	{
 		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2});
@@ -157,7 +155,7 @@ public:
 		auto self = shared_from_this();
 		return std::make_shared<FlowableTakeWhile<T>>(self,predicate);
 	}
-
+	*/
 protected:
 	virtual void SubscribeActual(std::shared_ptr<Subscriber<T>> subscriber) {}
 };
