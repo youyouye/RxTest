@@ -89,10 +89,12 @@ public:
 	{
 		return std::make_shared<FlowableFromArray<T>>(std::vector<std::shared_ptr<Flowable<T>>>{item1, item2, item3});
 	}
+	*/
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2)
 	{
-		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Flowable<T>>>{source1, source2});
+		return std::make_shared<FlowableConcat<T>>(std::vector<std::shared_ptr<Publisher<T>>>{source1, source2});
 	}
+	/*
 	static std::shared_ptr<Flowable<T>> Concat(std::shared_ptr<Flowable<T>> source1, std::shared_ptr<Flowable<T>> source2,
 		std::shared_ptr<Flowable<T>> source3)
 	{
@@ -131,12 +133,14 @@ public:
 	{
 		return std::make_shared<FlowableCreate<T>>(source);
 	}
+	*/
 	template<typename R>
 	std::shared_ptr<Flowable<R>> FlatMap(const std::function<std::shared_ptr<Flowable<R>>(const T& item)>& mapper) 
 	{
 		auto self = shared_from_this();
 		return std::make_shared<FlowableFlatMap<T,R>>(self,mapper);
 	}
+	/*
 	template<typename T1,typename T2>
 	static std::shared_ptr<Flowable<T>> Zip(std::shared_ptr<Flowable<T1>> source1,std::shared_ptr<Flowable<T2>> source2,
 		std::function<T(const T1&,const T2&)> zipper) 

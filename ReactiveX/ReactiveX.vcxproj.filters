@@ -99,6 +99,9 @@
     <ClInclude Include="rx\rx_subscriber\lambda_subscriber.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="rx\rx_subscription\subscription_arbiter.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rx\main.cpp">

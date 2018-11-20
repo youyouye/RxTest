@@ -164,6 +164,7 @@
     <ClInclude Include="rx\rx_operation\flowable_zip.hpp" />
     <ClInclude Include="rx\rx_subscriber.hpp" />
     <ClInclude Include="rx\rx_subscriber\lambda_subscriber.hpp" />
+    <ClInclude Include="rx\rx_subscription\subscription_arbiter.hpp" />
     <ClInclude Include="rx\rx_test\rx_base_test.hpp" />
     <ClInclude Include="rx\rx_test\rx_concat_test.hpp" />
     <ClInclude Include="rx\rx_test\rx_create_test.hpp" />
