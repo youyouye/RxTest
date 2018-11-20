@@ -3,6 +3,7 @@
 #include <map>
 #include <iostream>
 #include "rx_base_test.hpp"
+#include "rx_just_test.hpp"
 
 class RxTestManager 
 {
@@ -24,6 +25,8 @@ public:
 
 	void Init() 
 	{
+		auto just = std::make_shared<RxJustTest>();
+		test_cases_.insert({ L"just", just });
 	}
 
 	void RunAllTest() 

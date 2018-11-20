@@ -44,7 +44,7 @@ class JustSubscription : public Subscription
 {
 public:
 	JustSubscription(std::shared_ptr<Subscriber<T>> actual, const std::vector<T>& values)
-		:downstream_(subscriber), values_(values)
+		:downstream_(actual), values_(values)
 	{
 	}
 

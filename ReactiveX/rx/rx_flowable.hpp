@@ -49,7 +49,6 @@ public:
 		return std::make_shared<FlowableJust<T>>(item1, item2,item3,item4,item5);
 	}
 
-	/*
 	std::shared_ptr<Flowable<T>> SubscribeOn(const ThreadType &type)
 	{
 		return std::make_shared<FlowableSubscribeOn<T>>(shared_from_this(),type);
@@ -59,7 +58,7 @@ public:
 	{
 		return std::make_shared<FlowableObserveOn<T>>(shared_from_this(),type);
 	}
-
+	/*
 	static std::shared_ptr<Flowable<T>> FromArray(const T& item1,const T& item2) 
 	{
 		return std::make_shared<FlowableFromArray<T>>(std::vector<T>{item1,item2});

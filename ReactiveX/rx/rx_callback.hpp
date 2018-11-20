@@ -4,4 +4,4 @@
 
 typedef std::function<void(std::shared_ptr<Subscription>)> SubscribeCallback;
 typedef std::function<void()> CompleteCallback;
-typedef std::function<void(Error)> ErrorCallabck;
+typedef std::function<void(std::shared_ptr<Error>)> ErrorCallabck;
